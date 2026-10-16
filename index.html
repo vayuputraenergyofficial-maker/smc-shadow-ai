@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>SMC Shadow AI v2.1 — Deepak Private Terminal</title>
+  <style>
+    :root {
+      --bg-main: #070b14;
+      --bg-card: #0f172a;
+      --bg-card-alt: #131e36;
+      --border: #1e293b;
+      --gold: #f59e0b;
+      --gold-soft: rgba(245, 158, 11, 0.15);
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.15);
+      --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, 0.15);
+      --cyan: #06b6d4;
+      --cyan-soft: rgba(6, 182, 212, 0.15);
+      --purple: #a855f7;
+      --purple-soft: rgba(168, 85, 247, 0.16);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding-bottom: 90px;
+      border-left: 1px solid #111827;
+      border-right: 1px solid #111827;
+      position: relative;
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 11, 20, 0.94);
+      backdrop-filter: blur(12px);
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .shield-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #070b14;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .private-badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      font-weight: 700;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.45; }
+      100% { transform: scale(0.95); opacity: 1; }
+    }
+
+    .container {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Broker Balance & Market Bar (v2.1 Upgrade) */
+    .balance-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bal-box {
+      background: #090e1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 8px;
+    }
+
+    .bal-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .bal-val {
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .market-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .instrument-select {
+      display: flex;
+      gap: 6px;
+    }
+
+    .inst-btn {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .inst-btn.active {
+      background: var(--gold-soft);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .live-price-box {
+      text-align: right;
+    }
+
+    .live-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .session-tag {
+      font-size: 10px;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    /* Dual Mode Banner */
+    .mode-card {
+      background: linear-gradient(145deg, #0f172a, #17153b);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .mode-pill {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.75);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-pill.active-hunter {
+      background: var(--green-soft);
+      border-color: var(--green);
+    }
+
+    .mode-pill.active-scientist {
+      background: var(--purple-soft);
+      border-color: var(--purple);
+    }
+
+    .mode-name {
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mode-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .target-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .target-label {
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .target-amount {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #090d16;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 68%;
+      background: linear-gradient(90deg, #10b981, #f59e0b);
+      transition: width 0.35s ease;
+    }
+
+    .target-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-sm {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card-alt);
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-sm.gold {
+      background: var(--gold-soft);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Timeframe Bar (v2.1 New) */
+    .tf-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 4px;
+    }
+
+    .tf-group {
+      display: flex;
+      gap: 5px;
+    }
+
+    .tf-btn {
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #090f1d;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tf-btn.active {
+      background: var(--gold-soft);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .regime-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .regime-btn {
+      padding: 7px 5px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card-alt);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .regime-btn.active {
+      background: var(--cyan-soft);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    canvas#smcChart {
+      width: 100%;
+      height: 225px;
+      background: #080d1a;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .smc-signal-box {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .signal-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .metric-chip {
+      background: #0a1020;
+      padding: 6px;
+      border-radius: 6px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .metric-chip span {
+      display: block;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .metric-chip strong {
+      font-size: 11px;
+      color: var(--text-main);
+    }
+
+    .news-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #0b1324;
+      border: 1px solid var(--border);
+      margin-top: 6px;
+      gap: 8px;
+    }
+
+    .news-score {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--green-soft);
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .mentor-box {
+      background: linear-gradient(145deg, #0d1629, #091d26);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .mentor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--cyan);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .pattern-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .pattern-table th, .pattern-table td {
+      padding: 7px 6px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pattern-table th {
+      color: var(--text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .sec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .sec-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      background: #0a101f;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .sec-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--green);
+      background: var(--green-soft);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #090e1a;
+      color: var(--text-main);
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .kill-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--red);
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .kill-btn.locked {
+      background: linear-gradient(135deg, #10b981, #047857);
+      border-color: var(--green);
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(10, 15, 29, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 6px;
+      z-index: 60;
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .nav-item.active {
+      color: var(--gold);
+    }
+
+    .tab-section {
+      display: none;
+    }
+
+    .tab-section.active {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="app-header">
+    <div class="brand-wrap">
+      <div class="shield-icon">SMC</div>
+      <div>
+        <div class="brand-title">
+          SHADOW AI <span class="private-badge">v2.1 PRO</span>
+        </div>
+        <div id="connSub" class="brand-sub">Auto-Tick Engine • Detached DB Active</div>
+      </div>
+    </div>
+    <div id="botStatusPill" class="status-pill">
+      <span class="status-dot"></span>
+      <span id="statusText">HUNTER LIVE</span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Broker Account Balance & Live Ticker Card (v2.1 Upgraded) -->
+    <div class="card">
+      <div class="balance-strip">
+        <div class="bal-box">
+          <span class="bal-label" id="brokerNameLbl">Dhan Margin Bal</span>
+          <div class="bal-val" id="acctBal">₹25,400</div>
+        </div>
+        <div class="bal-box">
+          <span class="bal-label">Today's Realized</span>
+          <div class="bal-val" id="topPnl" style="color:var(--green);">+₹680</div>
+        </div>
+        <div class="bal-box">
+          <span class="bal-label">Win Rate (Today)</span>
+          <div class="bal-val" id="winRatioLbl" style="color:var(--gold);">2W / 0L (100%)</div>
+        </div>
+      </div>
+
+      <div class="market-bar">
+        <div class="instrument-select">
+          <button class="inst-btn active" onclick="switchInstrument('GOLDM', this)">Dhan GOLDM</button>
+          <button class="inst-btn" onclick="switchInstrument('XAUUSD', this)">MT5 XAU/USD</button>
+        </div>
+        <div class="live-price-box">
+          <div id="livePrice" class="live-price">₹78,420</div>
+          <div id="sessionTag" class="session-tag">🟢 US Golden Session • Auto-Tick ON</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: TERMINAL -->
+    <div id="tab-terminal" class="tab-section active">
+
+      <!-- Dual Brain Engine -->
+      <div class="card mode-card">
+        <div class="card-header">
+          <div class="card-title">⚡ Dual-Brain Auto-Switch Engine</div>
+          <span id="walletLockBadge" style="font-size:10px; color:var(--green); font-weight:700;">🔓 Broker API Ready</span>
+        </div>
+
+        <div class="mode-grid">
+          <div id="hunterPill" class="mode-pill active-hunter" onclick="setEngineMode('HUNTER')">
+            <div class="mode-name">
+              <span>🎯 Hunter Mode</span>
+              <span id="hunterStateTxt">ON</span>
+            </div>
+            <div class="mode-desc">Sniper Stop-Hunt entry jab tak ₹1,000 target book na ho.</div>
+          </div>
+          <div id="scientistPill" class="mode-pill" onclick="setEngineMode('SCIENTIST')">
+            <div class="mode-name">
+              <span>🧪 Ghost Scientist</span>
+              <span id="sciStatus">STANDBY</span>
+            </div>
+            <div class="mode-desc">Target lock ke baad ₹0 risk par live shadow pattern research.</div>
+          </div>
+        </div>
+
+        <div class="target-row">
+          <span class="target-label">Daily Target Lock (Auto-Switch at ₹1,000)</span>
+          <span id="pnlText" class="target-amount">+₹680 / ₹1,000</span>
+        </div>
+        <div class="progress-track">
+          <div id="pnlBar" class="progress-fill" style="width: 68%;"></div>
+        </div>
+
+        <div class="target-controls">
+          <button class="btn-sm gold" onclick="simulateSniperWin()">🎯 +₹365 Sniper Win (Test Auto-Lock)</button>
+          <button class="btn-sm" onclick="resetDailyTarget()">🔄 New Day Reset</button>
+        </div>
+      </div>
+
+      <!-- Multi-Timeframe Smart Money Scanner -->
+      <div class="card">
+        <div class="tf-bar">
+          <div class="card-title">🦈 SMC Liquidity Scanner</div>
+          <div class="tf-group">
+            <button class="tf-btn" onclick="setTimeframe('1m', this)">1m</button>
+            <button class="tf-btn" onclick="setTimeframe('5m', this)">5m</button>
+            <button class="tf-btn active" onclick="setTimeframe('15m', this)">15m</button>
+            <button class="tf-btn" onclick="setTimeframe('30m', this)">30m</button>
+            <button class="tf-btn" onclick="setTimeframe('1H', this)">1H</button>
+          </div>
+        </div>
+
+        <div class="regime-tabs">
+          <button class="regime-btn active" onclick="setRegime('UPTREND', this)">📈 Uptrend<br>(Bear-Trap Buy)</button>
+          <button class="regime-btn" onclick="setRegime('DOWNTREND', this)">📉 Downtrend<br>(Bull-Trap Sell)</button>
+          <button class="regime-btn" onclick="setRegime('SIDEWAYS', this)">↔️ Sideways<br>(Ping-Pong Scalp)</button>
+        </div>
+
+        <canvas id="smcChart" width="440" height="225"></canvas>
+
+        <div id="signalBox" class="smc-signal-box"></div>
+      </div>
+
+      <!-- 60-Second Live News Radar -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🌐 60-Second Global News Shield</div>
+          <span id="newsTimer" style="font-size:10px; color:var(--cyan);">Auto-Scan: 12s ago</span>
+        </div>
+        <div class="news-strip">
+          <div>
+            <div id="newsHeadline" style="font-size:12px; font-weight:700;">US Dollar Index (DXY) cools off; Treasury yields dip</div>
+            <div id="newsSub" style="font-size:10px; color:var(--text-muted); margin-top:2px;">Red-Folder CPI/Fed Shield: Clear • Safe for Gold Longs</div>
+          </div>
+          <div id="newsBadge" class="news-score">BULLISH +74</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: 12:00 AM MENTOR -->
+    <div id="tab-mentor" class="tab-section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕛 12:00 AM Private Briefing (For Deepak)</div>
+          <span style="font-size:10px; color:var(--cyan); font-weight:700;">Human-Mentor AI</span>
+        </div>
+
+        <div class="mentor-box">
+          <div class="mentor-header">
+            <span>🤖 Message from SMC Shadow Brain</span>
+            <span id="mentorTimeLbl">Tonight • 12:00 AM</span>
+          </div>
+          <p id="mentorSpeech">
+            "<b>Deepak</b>, aaj humne apna ₹1,000+ ka intraday target lock karne ke baad <b>Ghost Scientist Mode</b> mein raat 11:30 PM tak bina ₹1 risk liye <b>36 live shadow setups</b> (1m, 5m, 15m) par research ki aur ek naya pattern crack kiya hai:<br><br>
+            🔹 <b>Aaj ki Discovery:</b> Jab market sideways/choppy hota hai, toh Smart Money pehli candle mein Stop-Loss khaane ke baad turant upar nahi jata, balki ek <b>'Double Sweep Retest'</b> karta hai.<br>
+            🔹
