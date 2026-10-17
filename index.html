@@ -1,469 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#070b14" />
-  <title>SMC Shadow AI v2.2 — Deepak Private Vault</title>
-  <style>
-    :root {
-      --bg:#070b14; --card:#0f172a; --alt:#131e36; --bdr:#1e293b;
-      --gold:#f59e0b; --gold-s:rgba(245,158,11,0.15);
-      --grn:#10b981; --grn-s:rgba(16,185,129,0.15);
-      --red:#ef4444; --red-s:rgba(239,68,68,0.15);
-      --cyn:#06b6d4; --cyn-s:rgba(6,182,212,0.15);
-      --prp:#a855f7; --prp-s:rgba(168,85,247,0.16);
-      --txt:#f8fafc; --mut:#94a3b8;
-    }
-    * { box-sizing:border-box; margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; }
-    body { background:var(--bg); color:var(--txt); max-width:480px; margin:0 auto; min-height:100vh; padding-bottom:88px; border-left:1px solid #111827; border-right:1px solid #111827; overflow-x:hidden; }
-    button { cursor:pointer; outline:none; transition:transform 0.12s ease, background 0.2s ease; }
-    button:active { transform:scale(0.95); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SMC SHADOW AI v2.2 PRO - Live Connected</title>
+<style>
+  :root {
+    --bg: #070a12; --card: #0f1523; --border: #1e293b;
+    --gold: #f59e0b; --green: #10b981; --red: #ef4444; --blue: #3b82f6;
+    --text: #f8fafc; --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--text); padding: 12px 12px 80px 12px; }
+  
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 16px 4px; }
+  .logo-box { display: flex; align-items: center; gap: 10px; }
+  .smc-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 900; padding: 8px 10px; border-radius: 10px; font-size: 14px; }
+  .version-tag { background: #451a03; color: #fbbf24; border: 1px solid #d97706; font-size: 10px; padding: 2px 6px; border-radius: 5px; font-weight: 700; margin-left: 6px; }
+  .live-pill { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--green); color: var(--green); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--green); }
 
-    .app-header { position:sticky; top:0; z-index:50; background:rgba(7,11,20,0.95); backdrop-filter:blur(12px); padding:12px 14px; border-bottom:1px solid var(--bdr); display:flex; justify-content:space-between; align-items:center; }
-    .brand-wrap { display:flex; align-items:center; gap:10px; }
-    .shield-icon { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#f59e0b,#b45309); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; color:#070b14; box-shadow:0 0 15px rgba(245,158,11,0.4); }
-    .brand-title { font-size:14px; font-weight:800; display:flex; align-items:center; gap:6px; }
-    .private-badge { font-size:9px; padding:2px 6px; border-radius:4px; background:var(--gold-s); color:var(--gold); border:1px solid rgba(245,158,11,0.35); font-weight:700; }
-    .brand-sub { font-size:10px; color:var(--mut); margin-top:2px; }
-    .status-pill { display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:20px; font-size:10px; font-weight:800; background:var(--grn-s); color:var(--grn); border:1px solid rgba(16,185,129,0.35); }
-    .status-dot { width:7px; height:7px; border-radius:50%; background:currentColor; animation:pulse 1.4s infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(0.95);opacity:1;} 50%{transform:scale(1.35);opacity:0.4;} }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .stat-card { background: #090d16; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; }
+  .stat-lbl { font-size: 10px; color: var(--muted); }
+  .stat-val { font-size: 16px; font-weight: 800; margin-top: 4px; }
 
-    .container { padding:12px; display:flex; flex-direction:column; gap:12px; }
-    .card { background:var(--card); border:1px solid var(--bdr); border-radius:14px; padding:13px; box-shadow:0 6px 20px rgba(0,0,0,0.35); }
-    .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-    .card-title { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--mut); display:flex; align-items:center; gap:6px; }
+  .market-row { display: flex; justify-content: space-between; align-items: center; }
+  .asset-tabs { display: flex; gap: 8px; }
+  .asset-btn { background: #090d16; border: 1px solid #1e293b; color: var(--muted); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .asset-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(245, 158, 11, 0.1); }
+  .big-price { font-size: 26px; font-weight: 900; color: var(--gold); text-align: right; }
 
-    .balance-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--bdr); }
-    .bal-box { background:#090e1a; border:1px solid var(--bdr); border-radius:8px; padding:7px 8px; }
-    .bal-label { font-size:9px; color:var(--mut); display:block; }
-    .bal-val { font-size:13px; font-weight:800; margin-top:2px; font-variant-numeric:tabular-nums; }
+  .brain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .brain-box { background: #090d16; border: 1px solid #1e293b; border-radius: 12px; padding: 12px; }
+  .brain-box.active-green { border-color: var(--green); background: rgba(16, 185, 129, 0.06); }
+  
+  .progress-bg { width: 100%; height: 10px; background: #090d16; border-radius: 10px; overflow: hidden; margin: 8px 0 12px 0; border: 1px solid #1e293b; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); width: 0%; transition: width 0.4s; }
 
-    .market-bar { display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .instrument-select { display:flex; gap:6px; }
-    .inst-btn { background:var(--alt); border:1px solid var(--bdr); color:var(--mut); padding:7px 11px; border-radius:8px; font-size:11px; font-weight:700; }
-    .inst-btn.active { background:var(--gold-s); color:var(--gold); border-color:var(--gold); }
-    .live-price-box { text-align:right; }
-    .live-price { font-size:20px; font-weight:800; color:var(--gold); font-variant-numeric:tabular-nums; }
-    .session-tag { font-size:10px; color:var(--cyn); font-weight:600; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .action-btn { padding: 11px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; border: 1px solid #1e293b; background: #090d16; color: var(--text); }
+  .action-btn.gold { border-color: var(--gold); color: var(--gold); background: rgba(245, 158, 11, 0.12); }
+  .action-btn.red { border-color: var(--red); color: #f87171; background: rgba(239, 68, 68, 0.12); }
 
-    .mode-card { background:linear-gradient(145deg,#0f172a,#17153b); border:1px solid rgba(168,85,247,0.35); }
-    .mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
-    .mode-pill { padding:10px; border-radius:10px; border:1px solid var(--bdr); background:rgba(15,23,42,0.75); cursor:pointer; }
-    .mode-pill.active-hunter { background:var(--grn-s); border-color:var(--grn); }
-    .mode-pill.active-scientist { background:var(--prp-s); border-color:var(--prp); }
-    .mode-name { font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:space-between; }
-    .mode-desc { font-size:10px; color:var(--mut); margin-top:4px; line-height:1.35; }
+  .chart-box { background: #060911; border: 1px solid #1e293b; border-radius: 12px; padding: 14px; margin: 12px 0; position: relative; }
+  .pool-line-top { border-bottom: 2px dashed var(--red); padding-bottom: 4px; color: #f87171; font-size: 11px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; }
+  .pool-line-bot { border-top: 2px dashed var(--gold); padding-top: 4px; color: var(--gold); font-size: 11px; font-weight: 700; margin-top: 18px; display: flex; justify-content: space-between; }
+  
+  .signal-card { background: rgba(16, 185, 129, 0.08); border: 1px solid var(--green); border-radius: 12px; padding: 12px; }
+  .signal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+  .sig-item { background: #090d16; padding: 8px; border-radius: 8px; text-align: center; border: 1px solid #1e293b; }
+  .sig-lbl { font-size: 9px; color: var(--muted); }
+  .sig-val { font-size: 12px; font-weight: 800; margin-top: 2px; }
 
-    .target-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
-    .target-label { font-size:11px; font-weight:700; }
-    .target-amount { font-size:14px; font-weight:800; color:var(--grn); }
-    .progress-track { width:100%; height:10px; background:#090d16; border-radius:8px; overflow:hidden; border:1px solid var(--bdr); }
-    .progress-fill { height:100%; width:68%; background:linear-gradient(90deg,#10b981,#f59e0b); transition:width 0.35s ease; }
-    .target-controls { display:flex; gap:8px; margin-top:10px; }
-    .btn-sm { flex:1; padding:9px 10px; border-radius:8px; border:1px solid var(--bdr); background:var(--alt); color:var(--txt); font-size:11px; font-weight:700; }
-    .btn-sm.gold { background:var(--gold-s); border-color:var(--gold); color:var(--gold); }
-
-    .tf-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:4px; }
-    .tf-group { display:flex; gap:4px; }
-    .tf-btn { padding:5px 9px; border-radius:6px; border:1px solid var(--bdr); background:#090f1d; color:var(--mut); font-size:10px; font-weight:800; }
-    .tf-btn.active { background:var(--gold-s); color:var(--gold); border-color:var(--gold); }
-
-    .regime-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:10px; }
-    .regime-btn { padding:7px 4px; border-radius:8px; border:1px solid var(--bdr); background:var(--alt); color:var(--mut); font-size:10px; font-weight:700; text-align:center; line-height:1.3; }
-    .regime-btn.active { background:var(--cyn-s); border-color:var(--cyn); color:var(--cyn); }
-
-    canvas#smcChart { width:100%; height:220px; background:#080d1a; border-radius:10px; border:1px solid var(--bdr); display:block; }
-    .smc-signal-box { margin-top:10px; padding:10px; border-radius:10px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); font-size:11px; line-height:1.45; }
-    .signal-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px; }
-    .metric-chip { background:#0a1020; padding:6px 4px; border-radius:6px; text-align:center; border:1px solid var(--bdr); }
-    .metric-chip span { display:block; font-size:8.5px; color:var(--mut); }
-    .metric-chip strong { font-size:11px; color:var(--txt); }
-
-    .news-strip { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; background:#0b1324; border:1px solid var(--bdr); gap:8px; cursor:pointer; }
-    .news-score { padding:5px 8px; border-radius:6px; font-size:10px; font-weight:800; background:var(--grn-s); color:var(--grn); white-space:nowrap; }
-
-    .mentor-box { background:linear-gradient(145deg,#0d1629,#091d26); border:1px solid rgba(6,182,212,0.35); padding:12px; border-radius:12px; font-size:12px; line-height:1.55; color:#e2e8f0; }
-    .mentor-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; color:var(--cyn); font-weight:800; font-size:12px; }
-    .pattern-table { width:100%; border-collapse:collapse; margin-top:10px; font-size:11px; }
-    .pattern-table th, .pattern-table td { padding:8px 6px; text-align:left; border-bottom:1px solid var(--bdr); }
-    .pattern-table th { color:var(--mut); font-size:10px; text-transform:uppercase; }
-
-    .sec-list { display:flex; flex-direction:column; gap:7px; margin-bottom:12px; }
-    .sec-item { display:flex; justify-content:space-between; align-items:center; padding:9px 10px; background:#0a101f; border-radius:8px; border:1px solid var(--bdr); font-size:11px; }
-    .sec-badge { font-size:10px; font-weight:700; color:var(--grn); background:var(--grn-s); padding:3px 7px; border-radius:4px; }
-    .input-field { width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--bdr); background:#090e1a; color:var(--txt); font-size:11px; margin-bottom:8px; }
-    .kill-btn { width:100%; padding:14px; border-radius:12px; border:1px solid var(--red); background:linear-gradient(135deg,#dc2626,#991b1b); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .kill-btn.locked { background:linear-gradient(135deg,#10b981,#047857); border-color:var(--grn); }
-
-    .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(10,15,29,0.98); backdrop-filter:blur(12px); border-top:1px solid var(--bdr); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 6px; z-index:60; }
-    .nav-item { background:none; border:none; color:var(--mut); font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; gap:4px; padding:4px 0; }
-    .nav-item.active { color:var(--gold); }
-    .tab-section { display:none; }
-    .tab-section.active { display:flex; flex-direction:column; gap:12px; }
-  </style>
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #090d16; border-top: 1px solid #1e293b; display: flex; justify-content: space-around; padding: 10px 0; z-index: 99; }
+  .nav-item { color: var(--muted); font-size: 11px; text-align: center; font-weight: 700; }
+  .nav-item.active { color: var(--gold); }
+  .green { color: var(--green); } .red { color: #f87171; } .gold { color: var(--gold); }
+</style>
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="brand-wrap">
-      <div class="shield-icon">SMC</div>
+  <div class="header">
+    <div class="logo-box">
+      <div class="smc-icon">SMC</div>
       <div>
-        <div class="brand-title">SHADOW AI <span class="private-badge">v2.2 PRO</span></div>
-        <div id="connSub" class="brand-sub">Auto-Tick Engine • Detached DB Active</div>
+        <div style="font-weight:900; font-size:17px;">SHADOW AI <span class="version-tag">v2.2 PRO</span></div>
+        <div id="sync-sub" style="font-size:11px; color:var(--muted);">Connecting to Render Cloud Engine...</div>
       </div>
     </div>
-    <div id="botStatusPill" class="status-pill">
-      <span class="status-dot"></span>
-      <span id="statusText">HUNTER LIVE</span>
-    </div>
-  </header>
+    <div class="live-pill"><span class="dot"></span> HUNTER LIVE</div>
+  </div>
 
-  <main class="container">
-    <!-- Top Balance & Live Price Card -->
-    <div class="card">
-      <div class="balance-strip">
-        <div class="bal-box">
-          <span class="bal-label" id="brokerNameLbl">Dhan Margin Bal</span>
-          <div class="bal-val" id="acctBal">₹25,400</div>
-        </div>
-        <div class="bal-box">
-          <span class="bal-label">Today's Realized</span>
-          <div class="bal-val" id="topPnl" style="color:var(--grn);">+₹680</div>
-        </div>
-        <div class="bal-box">
-          <span class="bal-label">Win Rate (Today)</span>
-          <div class="bal-val" id="winRatioLbl" style="color:var(--gold);">2W / 0L (100%)</div>
-        </div>
+  <!-- Top Equity & Live Price Card -->
+  <div class="card">
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-lbl" id="eq-lbl">MT5 Demo Equity</div>
+        <div class="stat-val" id="eq-val">$10,000.00</div>
       </div>
-
-      <div class="market-bar">
-        <div class="instrument-select">
-          <button type="button" class="inst-btn active" onclick="switchInstrument('GOLDM', this)">Dhan GOLDM</button>
-          <button type="button" class="inst-btn" onclick="switchInstrument('XAUUSD', this)">MT5 XAU/USD</button>
-        </div>
-        <div class="live-price-box">
-          <div id="livePrice" class="live-price">₹78,420</div>
-          <div id="sessionTag" class="session-tag">🟢 US Golden Session • Live</div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Today's Realized</div>
+        <div class="stat-val green" id="pnl-val">+$0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Win Rate (Live)</div>
+        <div class="stat-val gold" id="wr-val">0W / 0L (0%)</div>
       </div>
     </div>
 
-    <!-- TAB 1: TERMINAL -->
-    <div id="tab-terminal" class="tab-section active">
-      <div class="card mode-card">
-        <div class="card-header">
-          <div class="card-title">⚡ Dual-Brain Auto-Switch Engine</div>
-          <span id="walletLockBadge" style="font-size:10px; color:var(--grn); font-weight:700;">🔓 Broker API Ready</span>
-        </div>
-
-        <div class="mode-grid">
-          <div id="hunterPill" class="mode-pill active-hunter" onclick="setEngineMode('HUNTER')">
-            <div class="mode-name"><span>🎯 Hunter Mode</span><span id="hunterStateTxt">ON</span></div>
-            <div class="mode-desc">Sniper Stop-Hunt entry jab tak ₹1,000 target book na ho.</div>
-          </div>
-          <div id="scientistPill" class="mode-pill" onclick="setEngineMode('SCIENTIST')">
-            <div class="mode-name"><span>🧪 Ghost Scientist</span><span id="sciStatus">STANDBY</span></div>
-            <div class="mode-desc">Target lock ke baad ₹0 risk par live shadow pattern research.</div>
-          </div>
-        </div>
-
-        <div class="target-row">
-          <span class="target-label">Daily Target Lock (Auto-Switch at ₹1,000)</span>
-          <span id="pnlText" class="target-amount">+₹680 / ₹1,000</span>
-        </div>
-        <div class="progress-track">
-          <div id="pnlBar" class="progress-fill" style="width:68%;"></div>
-        </div>
-
-        <div class="target-controls">
-          <button type="button" class="btn-sm gold" onclick="simulateSniperWin()">🎯 +₹365 Sniper Win (Test Auto-Lock)</button>
-          <button type="button" class="btn-sm" onclick="resetDailyTarget()">🔄 New Day Reset</button>
-        </div>
+    <div class="market-row">
+      <div class="asset-tabs">
+        <button class="asset-btn" id="btn-inr" onclick="setMode('INR')">Dhan GOLDM (₹)</button>
+        <button class="asset-btn active" id="btn-usd" onclick="setMode('USD')">MT5 XAU/USD ($)</button>
       </div>
-
-      <!-- Smart Money Chart Card -->
-      <div class="card">
-        <div class="tf-bar">
-          <div class="card-title">🦈 SMC Liquidity Scanner</div>
-          <div class="tf-group">
-            <button type="button" class="tf-btn" onclick="setTimeframe('1m', this)">1m</button>
-            <button type="button" class="tf-btn" onclick="setTimeframe('5m', this)">5m</button>
-            <button type="button" class="tf-btn active" onclick="setTimeframe('15m', this)">15m</button>
-            <button type="button" class="tf-btn" onclick="setTimeframe('30m', this)">30m</button>
-            <button type="button" class="tf-btn" onclick="setTimeframe('1H', this)">1H</button>
-          </div>
-        </div>
-
-        <div class="regime-tabs">
-          <button type="button" class="regime-btn active" onclick="setRegime('UPTREND', this)">📈 Uptrend<br>(Bear-Trap Buy)</button>
-          <button type="button" class="regime-btn" onclick="setRegime('DOWNTREND', this)">📉 Downtrend<br>(Bull-Trap Sell)</button>
-          <button type="button" class="regime-btn" onclick="setRegime('SIDEWAYS', this)">↔️ Sideways<br>(Ping-Pong Scalp)</button>
-        </div>
-
-        <canvas id="smcChart" width="430" height="220"></canvas>
-        <div id="signalBox" class="smc-signal-box"></div>
+      <div>
+        <div class="big-price" id="live-price">$4164.65</div>
+        <div style="font-size:11px; color:var(--green); text-align:right;" id="tick-time">● TwelveData Live M15</div>
       </div>
+    </div>
+  </div>
 
-      <!-- Live News Radar -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🌐 60-Second Global News Shield</div>
-          <span id="newsTimer" style="font-size:10px; color:var(--cyn);">Tap to Scan Live</span>
+  <!-- Dual-Brain Auto-Switch Engine -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:12px; font-weight:800; color:#cbd5e1;">⚡ DUAL-BRAIN AUTO-SWITCH ENGINE</div>
+      <div style="font-size:11px; color:var(--green); font-weight:700;">🔒 Cloud API Connected</div>
+    </div>
+
+    <div class="brain-grid">
+      <div class="brain-box active-green">
+        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:800;">
+          <span>🎯 Hunter Mode</span> <span class="green">ON</span>
         </div>
-        <div class="news-strip" onclick="cycleNews()">
-          <div>
-            <div id="newsHeadline" style="font-size:12px; font-weight:700;">US Dollar Index (DXY) cools off; Treasury yields dip</div>
-            <div id="newsSub" style="font-size:10px; color:var(--mut); margin-top:2px;">Red-Folder CPI/Fed Shield: Clear • Safe for Gold Longs</div>
-          </div>
-          <div id="newsBadge" class="news-score">BULLISH +74</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:6px;">Real-time M15 Liquidity Sweep auto-entry active on cloud.</div>
+      </div>
+      <div class="brain-box">
+        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:800;">
+          <span>🧪 Ghost Scientist</span> <span class="gold" id="sci-status">ACTIVE</span>
         </div>
+        <div style="font-size:11px; color:var(--muted); margin-top:6px;">Scanning TwelveData M15 Order Blocks & Stop-Hunt zones.</div>
       </div>
     </div>
 
-    <!-- TAB 2: 12:00 AM MENTOR -->
-    <div id="tab-mentor" class="tab-section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🕛 12:00 AM Private Briefing (For Deepak)</div>
-          <span style="font-size:10px; color:var(--cyn); font-weight:700;">Human-Mentor AI</span>
-        </div>
-        <div class="mentor-box">
-          <div class="mentor-header">
-            <span>🤖 Message from SMC Shadow Brain</span>
-            <span>Tonight • 12:00 AM</span>
-          </div>
-          <p>
-            "<b>Deepak</b>, aaj humne apna ₹1,000+ ka intraday target lock karne ke baad <b>Ghost Scientist Mode</b> mein raat 11:30 PM tak bina ₹1 risk liye <b>36 live shadow setups</b> (1m, 5m, 15m) par research ki aur ek naya pattern crack kiya hai:<br><br>
-            🔹 <b>Aaj ki Discovery:</b> Jab market sideways/choppy hota hai, toh Smart Money pehli candle mein Stop-Loss khaane ke baad turant upar nahi jata, balki ek <b>'Double Sweep Retest'</b> karta hai.<br>
-            🔹 <b>Action Taken:</b> Maine is filter ko aapke kal ke Hunter Engine mein auto-update kar diya hai. Ab sideways market mein fakeout hone ka chance 38% aur kam ho gaya hai!"
-          </p>
-        </div>
-        <table class="pattern-table">
-          <thead>
-            <tr><th>Shadow Pattern Tested</th><th>TF</th><th>Trades</th><th>Win Acc.</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Liquidity Sweep + 50% Pin Retest</td><td>15m</td><td>14</td><td style="color:var(--grn);font-weight:800;">85.7%</td></tr>
-            <tr><td>London Open Fakeout Trap</td><td>5m</td><td>12</td><td style="color:var(--grn);font-weight:800;">83.3%</td></tr>
-            <tr><td>Sideways Range Ping-Pong</td><td>1m</td><td>10</td><td style="color:var(--gold);font-weight:800;">70.0%</td></tr>
-          </tbody>
-        </table>
+    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700;">
+      <span>Active Floating PnL (Open Position)</span>
+      <span class="green" id="floating-val">$0.00</span>
+    </div>
+    <div class="progress-bg"><div class="progress-fill" id="prog-bar" style="width: 50%;"></div></div>
+
+    <div class="btn-row">
+      <button class="action-btn gold" onclick="forceTrade()">🎯 Open Live Demo Trade</button>
+      <button class="action-btn red" onclick="closeTrade()">✖ Close Active Trade</button>
+    </div>
+  </div>
+
+  <!-- SMC Liquidity Scanner -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div style="font-size:12px; font-weight:800; color:#cbd5e1;">🦈 SMC LIQUIDITY SCANNER (LIVE M15)</div>
+      <div style="font-size:11px; font-weight:800;" class="gold" id="mkt-struct">SCANNING...</div>
+    </div>
+
+    <div class="chart-box">
+      <div class="pool-line-top">
+        <span>Retail Shorts Stop-Loss Pool (Supply Zone)</span>
+        <span id="supply-zone">---</span>
+      </div>
+      <div style="text-align:center; padding: 14px 0;">
+        <div style="font-size:12px; color:var(--muted);">LIVE 15M LIQUIDITY RANGE</div>
+        <div style="font-size:18px; font-weight:900; color:#f8fafc; margin-top:4px;" id="liq-range">Loading TwelveData...</div>
+        <div style="font-size:11px; color:#38bdf8; margin-top:6px; font-weight:700;" id="sniper-bias">WAITING CONFIRMATION</div>
+      </div>
+      <div class="pool-line-bot">
+        <span>Retail Buyers Stop-Loss Pool (Demand Zone)</span>
+        <span id="demand-zone">---</span>
       </div>
     </div>
 
-    <!-- TAB 3: CLOUD SYNC -->
-    <div id="tab-cloud" class="tab-section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">☁️ 24x7 Detached Cloud Brain</div>
-          <span class="sec-badge">SYNCED</span>
-        </div>
-        <div class="sec-list">
-          <div class="sec-item"><span>Python FastAPI Execution Server</span><span class="sec-badge">ONLINE (19ms)</span></div>
-          <div class="sec-item"><span>PostgreSQL Pattern Memory DB</span><span class="sec-badge">1,456 Setups Saved</span></div>
-          <div class="sec-item"><span>Dhan / MT5 WebSocket Bridge</span><span class="sec-badge">CONNECTED</span></div>
-        </div>
-        <input type="text" class="input-field" value="https://smc-brain-vault.deepak.internal/api/v2" readonly />
-        <button type="button" class="btn-sm gold" style="width:100%;" onclick="testCloudPing(this)">⚡ Ping Cloud Brain Server</button>
+    <!-- Live Active Trade Signal Box -->
+    <div class="signal-card" id="trade-card">
+      <div style="font-size:12px; font-weight:800;" class="green" id="trade-title">✅ CHECKING ACTIVE CLOUD POSITION...</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;" id="trade-reason">Syncing with smc-shadow-backend.onrender.com...</div>
+      <div class="signal-grid">
+        <div class="sig-item"><div class="sig-lbl">ENTRY</div><div class="sig-val" id="t-entry">---</div></div>
+        <div class="sig-item"><div class="sig-lbl">STOP</div><div class="sig-val red" id="t-sl">---</div></div>
+        <div class="sig-item"><div class="sig-lbl">TARGET</div><div class="sig-val green" id="t-tp">---</div></div>
+        <div class="sig-item"><div class="sig-lbl">FLOATING</div><div class="sig-val gold" id="t-pnl">$0.00</div></div>
       </div>
     </div>
+  </div>
 
-    <!-- TAB 4: SECURITY -->
-    <div id="tab-security" class="tab-section">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🛡️ Vault Security & Emergency Controls</div>
-          <span class="sec-badge">ENCRYPTED</span>
-        </div>
-        <div class="sec-list">
-          <div class="sec-item"><span>API Key Zero-Exposure Shield</span><span class="sec-badge">ACTIVE</span></div>
-          <div class="sec-item"><span>Max Daily Loss Circuit Breaker (₹500)</span><span class="sec-badge">LOCKED</span></div>
-          <div class="sec-item"><span>Auto-Kill on High Impact Red CPI</span><span class="sec-badge">ARMED</span></div>
-        </div>
-        <button type="button" id="killBtn" class="kill-btn" onclick="toggleKillSwitch()">
-          🛑 EMERGENCY KILL SWITCH (FREEZE ALL ORDERS)
-        </button>
-      </div>
-    </div>
-  </main>
+  <!-- Closed Trade History -->
+  <div class="card">
+    <div style="font-size:12px; font-weight:800; color:#cbd5e1; margin-bottom:8px;">📜 LIVE PAPER TRADE HISTORY</div>
+    <div id="hist-list" style="font-size:12px; color:var(--muted);">No closed trades yet.</div>
+  </div>
 
-  <nav class="bottom-nav">
-    <button type="button" class="nav-item active" onclick="switchTab('terminal', this)"><span>📊</span><span>Terminal</span></button>
-    <button type="button" class="nav-item" onclick="switchTab('mentor', this)"><span>🕛</span><span>12AM Mentor</span></button>
-    <button type="button" class="nav-item" onclick="switchTab('cloud', this)"><span>☁️</span><span>Cloud Sync</span></button>
-    <button type="button" class="nav-item" onclick="switchTab('security', this)"><span>🛡️</span><span>Security</span></button>
-  </nav>
+  <div class="bottom-nav">
+    <div class="nav-item active">📊 Terminal</div>
+    <div class="nav-item" onclick="syncNow()">🔄 Force Sync</div>
+    <div class="nav-item" onclick="window.open('https://smc-shadow-backend.onrender.com/api/status')">☁️ Raw API</div>
+    <div class="nav-item">🛡️ Connected</div>
+  </div>
 
-  <script>
-    let currentInstrument = 'GOLDM';
-    let currentRegime = 'UPTREND';
-    let currentTF = '15m';
-    let currentPnl = 680;
-    let wins = 2;
-    let engineMode = 'HUNTER';
-    let isKilled = false;
-    let basePrice = 78420;
-    let newsIdx = 0;
+<script>
+  const BACKEND_URL = "https://smc-shadow-backend.onrender.com";
+  let currencyMode = "USD"; // USD or INR (1 USD = 86 INR approx)
+  let lastData = null;
 
-    const newsFeed = [
-      { h: "US Dollar Index (DXY) cools off; Treasury yields dip", s: "Red-Folder CPI/Fed Shield: Clear • Safe for Gold Longs", b: "BULLISH +74", c: "var(--grn)", bg: "var(--grn-s)" },
-      { h: "Institutional Gold buying spotted on COMEX orderflow", s: "Smart Money  Absorption at London Fix • High Liquidity", b: "STRONG BUY +82", c: "var(--grn)", bg: "var(--grn-s)" },
-  { h: "Upcoming US Jobless Claims — Tight SL active", s: "Pre-News Volatility Filter Active", b: "CAUTION", c: "var(--gold)", bg: "var(--gold-s)" }
-];
-
-function cycleNews() {
-  newsIdx = (newsIdx + 1) % newsFeed.length;
-  const item = newsFeed[newsIdx];
-  document.getElementById('newsHeadline').innerText = item.h;
-  document.getElementById('newsSub').innerText = item.s;
-  const b = document.getElementById('newsBadge');
-  b.innerText = item.b; b.style.color = item.c; b.style.background = item.bg;
-  document.getElementById('newsTimer').innerText = 'Scanned Just Now';
-}
-
-function switchTab(tabId, btn) {
-  document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
-  const t = document.getElementById('tab-' + tabId);
-  if (t) t.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  if (tabId === 'terminal') drawChart();
-}
-
-function switchInstrument(inst, btn) {
-  currentInstrument = inst;
-  document.querySelectorAll('.inst-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  basePrice = inst === 'GOLDM' ? 78420 : 2748.50;
-  document.getElementById('brokerNameLbl').innerText = inst === 'GOLDM' ? 'Dhan Margin Bal' : 'MT5 Equity (USD)';
-  document.getElementById('acctBal').innerText = inst === 'GOLDM' ? '₹25,400' : '$420.00';
-  document.getElementById('livePrice').innerText = inst === 'GOLDM' ? '₹78,420' : '$2,748.50';
-  drawChart(); updateSignalBox();
-}
-
-function setEngineMode(mode) {
-  engineMode = mode;
-  const h = document.getElementById('hunterPill'), s = document.getElementById('scientistPill');
-  const st = document.getElementById('statusText'), sp = document.getElementById('botStatusPill');
-  if (mode === 'HUNTER') {
-    h.className = 'mode-pill active-hunter'; s.className = 'mode-pill';
-    document.getElementById('hunterStateTxt').innerText = 'ON';
-    document.getElementById('sciStatus').innerText = 'STANDBY';
-    st.innerText = 'HUNTER LIVE'; sp.style.color = 'var(--grn)'; sp.style.background = 'var(--grn-s)';
-  } else {
-    h.className = 'mode-pill'; s.className = 'mode-pill active-scientist';
-    document.getElementById('hunterStateTxt').innerText = 'LOCKED';
-    document.getElementById('sciStatus').innerText = 'ACTIVE 🔬';
-    st.innerText = 'GHOST SCIENTIST'; sp.style.color = 'var(--prp)'; sp.style.background = 'var(--prp-s)';
+  function setMode(mode) {
+    currencyMode = mode;
+    document.getElementById('btn-usd').className = mode === 'USD' ? 'asset-btn active' : 'asset-btn';
+    document.getElementById('btn-inr').className = mode === 'INR' ? 'asset-btn active' : 'asset-btn';
+    if (lastData) renderData(lastData);
   }
-}
 
-function simulateSniperWin() {
-  currentPnl += 365; wins += 1;
-  document.getElementById('pnlBar').style.width = Math.min(100, Math.round((currentPnl / 1000) * 100)) + '%';
-  document.getElementById('pnlText').innerText = `+₹${currentPnl} / ₹1,000`;
-  document.getElementById('topPnl').innerText = `+₹${currentPnl}`;
-  document.getElementById('winRatioLbl').innerText = `${wins}W / 0L (100%)`;
-  if (currentPnl >= 1000) {
-    setEngineMode('SCIENTIST');
-    const b = document.getElementById('walletLockBadge');
-    b.innerText = '🔒 Goal Locked • ₹0 Risk'; b.style.color = 'var(--gold)';
+  function fmt(usdAmount) {
+    if (currencyMode === 'INR') {
+      return '₹' + Math.round(usdAmount * 86).toLocaleString('en-IN');
+    }
+    return '$' + Number(usdAmount).toFixed(2);
   }
-}
 
-function resetDailyTarget() {
-  currentPnl = 0; wins = 0;
-  document.getElementById('pnlBar').style.width = '0%';
-  document.getElementById('pnlText').innerText = '+₹0 / ₹1,000';
-  document.getElementById('topPnl').innerText = '+₹0';
-  document.getElementById('winRatioLbl').innerText = '0W / 0L (100%)';
-  const b = document.getElementById('walletLockBadge');
-  b.innerText = '🔓 Broker API Ready'; b.style.color = 'var(--grn)';
-  setEngineMode('HUNTER');
-}
+  async function syncNow() {
+    try {
+      const res = await fetch(BACKEND_URL + "/api/status");
+      const d = await res.json();
+      lastData = d;
+      renderData(d);
+    } catch (e) {
+      document.getElementById('sync-sub').innerText = "Waking up Render Cloud (Wait 10s)...";
+    }
+  }
 
-function setTimeframe(tf, btn) {
-  currentTF = tf;
-  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  drawChart(); updateSignalBox();
-}
+  function renderData(d) {
+    const la = d.last_analysis;
+    document.getElementById('sync-sub').innerText = la.status + " • Connected";
+    document.getElementById('eq-lbl').innerText = currencyMode === 'INR' ? 'Dhan Demo Equity (₹)' : 'MT5 Demo Equity ($)';
+    document.getElementById('eq-val').innerText = fmt(d.virtual_balance);
 
-function setRegime(r, btn) {
-  currentRegime = r;
-  document.querySelectorAll('.regime-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  drawChart(); updateSignalBox();
-}
+    const pnlEl = document.getElementById('pnl-val');
+    pnlEl.innerText = (d.daily_pnl >= 0 ? '+' : '-') + fmt(Math.abs(d.daily_pnl));
+    pnlEl.className = 'stat-val ' + (d.daily_pnl >= 0 ? 'green' : 'red');
 
-function updateSignalBox() {
-  const box = document.getElementById('signalBox');
-  if (!box) return;
-  const g = currentInstrument === 'GOLDM';
-  const e = g ? '₹78,315' : '$2,744.2', sl = g ? '₹78,245' : '$2,741.8', tp = g ? '₹78,510' : '$2,751.5';
-  const title = currentRegime === 'UPTREND' ? `✅ BEAR-TRAP BUY (${currentTF})` : (currentRegime === 'DOWNTREND' ? `🔻 BULL-TRAP SELL (${currentTF})` : `↔️ PING-PONG SCALP (${currentTF})`);
-  box.innerHTML = `<div style="color:var(--grn);font-weight:800;margin-bottom:4px;">${title}:</div>
-    <div style="color:#cbd5e1;font-size:10.5px;">Retail Stop-Loss swept! <b>2.3x Institutional Volume</b> + 64% Pin-Wick Rejection confirmed.</div>
-    <div class="signal-metrics">
-      <div class="metric-chip"><span>ENTRY</span><strong>${e}</strong></div>
-      <div class="metric-chip"><span>STOP</span><strong style="color:var(--red);">${sl}</strong></div>
-      <div class="metric-chip"><span>TARGET</span><strong style="color:var(--grn);">${tp}</strong></div>
-      <div class="metric-chip"><span>RR</span><strong style="color:var(--gold);">1:2.8</strong></div>
-    </div>`;
-}
+    document.getElementById('wr-val').innerText = `${d.wins}W / ${d.losses}L (${d.win_rate}%)`;
 
-function drawChart() {
-  const c = document.getElementById('smcChart');
-  if (!c) return;
-  const ctx = c.getContext('2d'), W = c.width, H = c.height;
-  ctx.clearRect(0, 0, W, H);
-  ctx.strokeStyle = '#131d31';
-  for (let y = 30; y < H; y += 38) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-  ctx.setLineDash([5, 4]);
-  ctx.strokeStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(10, 40); ctx.lineTo(W - 10, 40); ctx.stroke();
-  ctx.fillStyle = '#f87171'; ctx.font = 'bold 9.5px sans-serif'; ctx.fillText('Retail Shorts Stop-Loss Pool (Bull-Trap Zone)', 14, 33);
-  ctx.strokeStyle = '#f59e0b'; ctx.beginPath(); ctx.moveTo(10, 166); ctx.lineTo(W - 10, 166); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#fbbf24'; ctx.fillText('Retail Buyers Stop-Loss Pool (Bear-Trap Liquidity)', 14, 180);
+    // Price display
+    if (currencyMode === 'INR') {
+      // Approx MCX Gold 10g conversion from XAU/USD
+      const mcxPrice = Math.round(la.last_price * 26.85);
+      document.getElementById('live-price').innerText = '₹' + mcxPrice.toLocaleString('en-IN');
+    } else {
+      document.getElementById('live-price').innerText = '$' + la.last_price.toFixed(2);
+    }
+    document.getElementById('tick-time').innerText = '● Tick: ' + la.updated_at;
 
-  const pts = currentRegime === 'UPTREND'
-    ? [[118,110,136,120,1],[120,116,144,135,0],[135,128,155,147,0],[147,140,164,156,0],[156,144,202,148,1,1],[148,124,154,128,1],[128,102,134,108,1],[108,80,116,86,1],[86,62,94,68,1]]
-    : (currentRegime === 'DOWNTREND'
-      ? [[115,105,125,108,1],[108,88,114,92,1],[92,72,98,76,1],[76,58,84,62,1],[62,14,74,70,0,2],[70,64,102,96,0],[96,88,124,118,0],[118,110,146,138,0],[138,130,162,154,0]]
-      : [[110,92,126,98,1],[98,82,120,114,0],[114,102,142,134,0],[134,120,186,126,1,1],[126,94,132,100,1],[100,26,112,106,0,2],[106,98,134,128,0],[128,104,136,110,1],[110,88,118,94,1]]);
+    // SMC Scanner
+    document.getElementById('mkt-struct').innerText = la.market_structure;
+    document.getElementById('liq-range').innerText = la.liquidity_pool;
+    document.getElementById('sniper-bias').innerText = 'STATUS: ' + la.bias;
 
-  pts.forEach((p, i) => {
-    const x = 35 + i * 44, col = p[5] ? '#06b6d4' : (p[4] ? '#10b981' : '#ef4444');
-    ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, p[1]); ctx.lineTo(x, p[2]); ctx.stroke();
-    ctx.fillStyle = col; ctx.fillRect(x - 8, Math.min(p[0], p[3]), 16, Math.max(5, Math.abs(p[3] - p[0])));
-    if (p[5] === 1) { ctx.fillStyle = '#06b6d4'; ctx.fillText('STOP-HUNT SWEEP!', x - 42, p[2] + 12); }
-    if (p[5] === 2) { ctx.fillStyle = '#06b6d4'; ctx.fillText('BULL-TRAP SWEEP!', x - 40, p[1] - 4); }
-  });
-}
+    if (la.order_block && la.order_block.includes('|')) {
+      const parts = la.order_block.split('|');
+      document.getElementById('demand-zone').innerText = parts[0].trim();
+      document.getElementById('supply-zone').innerText = parts[1].trim();
+    }
 
-function testCloudPing(btn) {
-  btn.innerText = '🔄 Pinging...';
-  setTimeout(() => { btn.innerText = '✅ Pong! 19ms • Synced'; }, 400);
-}
+    // Active Trade
+    const t = d.active_trade;
+    if (t) {
+      document.getElementById('floating-val').innerText = (t.floating_pnl >= 0 ? '+' : '-') + fmt(Math.abs(t.floating_pnl));
+      document.getElementById('floating-val').className = t.floating_pnl >= 0 ? 'green' : 'red';
+      document.getElementById('trade-title').innerText = `✅ ACTIVE: ${t.type} XAU/USD (0.20 Lot)`;
+      document.getElementById('trade-reason').innerText = `${t.reason} • Opened at ${t.opened_at}`;
+      document.getElementById('t-entry').innerText = '$' + t.entry;
+      document.getElementById('t-sl').innerText = '$' + t.sl;
+      document.getElementById('t-tp').innerText = '$' + t.tp;
+      document.getElementById('t-pnl').innerText = (t.floating_pnl >= 0 ? '+$' : '-$') + Math.abs(t.floating_pnl).toFixed(2);
+    } else {
+      document.getElementById('floating-val').innerText = '$0.00 (No Open Trade)';
+      document.getElementById('trade-title').innerText = '⏳ SCANNING M15 FOR NEXT STOP-HUNT SWEEP';
+      document.getElementById('trade-reason').innerText = 'Tap "Open Live Demo Trade" above to test instant execution.';
+      document.getElementById('t-entry').innerText = '---';
+      document.getElementById('t-sl').innerText = '---';
+      document.getElementById('t-tp').innerText = '---';
+      document.getElementById('t-pnl').innerText = '$0.00';
+    }
 
-function toggleKillSwitch() {
-  isKilled = !isKilled;
-  const b = document.getElementById('killBtn'), st = document.getElementById('statusText');
-  b.classList.toggle('locked', isKilled);
-  b.innerText = isKilled ? '🟢 RESUME AUTO-TRADING ENGINE' : '🛑 EMERGENCY KILL SWITCH (FREEZE ALL ORDERS)';
-  st.innerText = isKilled ? 'ENGINE PAUSED' : (engineMode === 'HUNTER' ? 'HUNTER LIVE' : 'GHOST SCIENTIST');
-}
+    // History
+    const histEl = document.getElementById('hist-list');
+    if (d.trade_history && d.trade_history.length > 0) {
+      histEl.innerHTML = d.trade_history.map(h => `
+        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #1e293b;">
+          <span><b>${h.type}</b> ($${h.entry} ➔ $${h.exit})</span>
+          <b class="${h.pnl >= 0 ? 'green' : 'red'}">${h.pnl >= 0 ? '+$' : '-$'}${Math.abs(h.pnl)} (${h.result})</b>
+        </div>
+      `).join('');
+    }
+  }
 
-drawChart(); updateSignalBox();
-setInterval(() => {
-  if (isKilled) return;
-  const el = document.getElementById('livePrice');
-  if (!el) return;
-  if (currentInstrument === 'GOLDM') { basePrice += (Math.floor(Math.random() * 11) - 5); el.innerText = '₹' + basePrice.toLocaleString('en-IN'); }
-  else { basePrice = +(basePrice + (Math.random() * 0.8 - 0.4)).toFixed(2); el.innerText = '$' + basePrice.toFixed(2); }
-}, 1600);
+  async function forceTrade() {
+    await fetch(BACKEND_URL + "/api/force_demo_trade", { method: "POST" });
+    syncNow();
+  }
+
+  async function closeTrade() {
+    await fetch(BACKEND_URL + "/api/close_active_trade", { method: "POST" });
+    syncNow();
+  }
+
+  syncNow();
+  setInterval(syncNow, 5000);
 </script>
 </body>
 </html>
